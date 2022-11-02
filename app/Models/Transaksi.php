@@ -16,4 +16,9 @@ class Transaksi extends Model
         'tipe',
         'total_stok'
     ];
+
+    public function inventory()
+    {
+        return $this->belongsTo(Inventory::class);
+    }
 }

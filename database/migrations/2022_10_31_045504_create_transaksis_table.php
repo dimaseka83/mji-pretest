@@ -20,7 +20,7 @@ class CreateTransaksisTable extends Migration
             $table->foreignId('inventory_id')->constrained('inventories')->onDelete('cascade');
             $table->integer('jumlah');
             $table->string('tipe');
-            $table->string('total_stok');
+            $table->integer('total_stok');
             $table->timestamps();
         });
     }

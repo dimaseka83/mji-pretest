@@ -10,6 +10,12 @@
                                 hide-details></v-text-field>
                         </v-card-title>
                         <v-data-table :headers="headers" :items="transaksi" :search="search" class="elevation-1">
+                            <template v-slot:item.tanggal="data">
+                                <span v-text="formatDate(data.item.tanggal)"></span>
+                            </template>
+                            <template v-slot:item.inventory.harga="data">
+                                <span v-text="formatRupiah(data.item.inventory.harga)"></span>
+                            </template>
                             <template v-slot:no-data>
                                 <v-btn color="primary" @click="initialize">
                                     Reset
@@ -57,7 +63,7 @@
                                                             </v-menu>
                                                         </v-col>
                                                         <v-col cols="12">
-                                                            <v-select :items="inventorySelect" @change="" placeholder="Pilih Barang"></v-select>
+                                                            <v-select :items="inventorySelect" @change="inventoryGet($event)" placeholder="Pilih Barang"></v-select>
                                                         </v-col>
                                                         <v-col cols="12">
                                                             <v-text-field v-model="editedItem.jumlah" @keypress="isNumber($event)" label="Jumlah"></v-text-field>
@@ -110,32 +116,46 @@
                 formTitle: '',
                 dialog: false,
                 headers: [{
-                        text: 'Name',
-                        align: 'start',
-                        sortable: false,
-                        value: 'name',
+                        text: 'Nomor Transaksi',
+                        value: 'nomor_transaksi'
                     },
                     {
-                        text: 'Stok',
-                        value: 'stok'
+                        text: 'Tanggal',
+                        value: 'tanggal'
+                    },
+                    {
+                        text: 'Barang',
+                        value: 'inventory.name'
+                    },
+                    {
+                        text: 'Tipe Transaksi',
+                        value: 'tipe'
                     },
                     {
                         text: 'Harga',
-                        value: 'harga'
+                        value: 'inventory.harga'
                     },
                     {
-                        text: 'Actions',
-                        value: 'actions',
-                        sortable: false
+                        text: 'Jumlah',
+                        value: 'jumlah'
+                    },
+                    {
+                        text: 'Total Stok',
+                        value: 'total_stok',
                     },
                 ],
                 editedItem: {
-                    id: '',
                     tanggal: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
                     nomor_transaksi: '',
-                    name: '',
+                    inventory_id: '',
                     tipe: '',
-                }
+                },
+                defaultItem: {
+                    tanggal: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+                    nomor_transaksi: '',
+                    inventory_id: '',
+                    tipe: '',
+                },
             }
         },
         mounted() {
@@ -158,19 +178,32 @@
             },
             async save() {
                 this.generateNomorTransaksi();
-                await axios.post('/api/addTransaksi', this.editedItem)
-                    .then(response => {
-                        this.initialize();
-                        this.dialog = false;
-                    })
+                const isNull = Object.values(this.editedItem).some(x => (x === null || x === ''));
+                if(isNull) {
+                    alert('Data tidak boleh kosong');
+                } else {
+                    try {
+                        await axios.post('/api/addTransaksi', this.editedItem)
+                            .then(response => {
+                                this.initialize();
+                                this.dialog = false;
+                                this.editedItem = Object.assign({}, this.defaultItem);
+                            })
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
             },
             generateNomorTransaksi() {
                 if(this.transaksi.length > 0) {
-                    this.editedItem.nomor_transaksi = `12000-${this.transaksi.length + 1}`;
+                    this.editedItem.nomor_transaksi = `12000${this.transaksi.length + 1}`;
                 }else {
                     this.editedItem.nomor_transaksi = `120001`;
                 }
             },
+            inventoryGet(event) {
+            this.editedItem.inventory_id = event;
+        },
         },
         computed: {
             inventorySelect() {

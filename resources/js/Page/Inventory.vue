@@ -21,7 +21,7 @@
                             class="elevation-1"
                         >
                         <template v-slot:item.harga="data">
-                                <p v-text="formatRupiah(data.item.harga)"></p>
+                                <span v-text="formatRupiah(data.item.harga)"></span>
                             </template>
                             <template v-slot:item.actions="data">
                                 <v-icon small class="mr-2" @click="editItem(data.index)">
@@ -104,8 +104,6 @@ export default {
             headers: [
                 {
                     text: 'Name',
-                    align: 'start',
-                    sortable: false,
                     value: 'name',
                 },
                 { text: 'Stok', value: 'stok' },
@@ -149,13 +147,29 @@ export default {
             }
         },
         async save(){
-            try {
+            let data = {
+                name: this.editedItem.name,
+                stok: this.editedItem.stok,
+                harga: this.editedItem.harga
+            }
+            const isNull = Object.values(data).some(x => (x === null || x === ''));
+            if(isNull){
+                alert('Data tidak boleh kosong');
+            }else{
+                try {
                 await axios.post('/api/add-inventory', this.editedItem).then(response => {
                     this.initialize();
                     this.dialog = false;
+                    this.editedItem = {
+                        id: '',
+                        name: '',
+                        stok: '',
+                        harga: ''
+                    }
                 })
             } catch (error) {
                 console.log(error);
+            }
             }
         },
     },
