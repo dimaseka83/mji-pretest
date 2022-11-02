@@ -34,8 +34,7 @@ export default {
             drawer: false,
             items: [
                 { title: 'Inventory', icon: 'mdi-view-dashboard', to: '/inventory' },
-                { title: 'Pembelian', icon: 'mdi-cart', to: '/pembelian' },
-                { title: 'Penjualan', icon: 'mdi-cart', to: '/penjualan' },
+                { title: 'Transaksi', icon: 'mdi-history', to: '/transaksi' },
             ],
         }
     },

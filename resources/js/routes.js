@@ -2,8 +2,7 @@ import VueRouter from "vue-router";
 
 import Login from "./Page/Login";
 import Inventory from "./Page/Inventory";
-import Penjualan from "./Page/Penjualan";
-import Pembelian from "./Page/Pembelian";
+import Transaksi from "./Page/Transaksi";
 
 const routes = [
     {
@@ -17,14 +16,9 @@ const routes = [
         component: Inventory,
     },
     {
-        path: "/pembelian",
-        name: "pembelian",
-        component: Pembelian,
-    },
-    {
-        path: "/penjualan",
-        name: "penjualan",
-        component: Penjualan,
+        path: "/transaksi",
+        name: "transaksi",
+        component: Transaksi,
     }
 ];
 

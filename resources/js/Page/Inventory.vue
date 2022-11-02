@@ -20,6 +20,9 @@
                             :search="search"
                             class="elevation-1"
                         >
+                        <template v-slot:item.harga="data">
+                                <p v-text="formatRupiah(data.item.harga)"></p>
+                            </template>
                             <template v-slot:item.actions="data">
                                 <v-icon small class="mr-2" @click="editItem(data.index)">
                                     mdi-pencil
@@ -86,10 +89,12 @@
 <script>
 import Nav from '../components/Navigation';
 import axios from 'axios';
+import mix from '../mixins/mix';
 export default {
     components: {
         Nav
     },
+    mixins: [mix],
     data() {
         return {
             inventory: [],
@@ -153,15 +158,6 @@ export default {
                 console.log(error);
             }
         },
-        isNumber(evt) {
-            evt = (evt) ? evt : window.event;
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                evt.preventDefault();
-            } else {
-                return true;
-            }
-        }
     },
 }
 </script>

@@ -1,72 +1,33 @@
 export default {
-    data() {
-        return {
-            menu: [
-                {
-                    name: 'Home',
-                    link: '/'
-                },
-                {
-                    name: 'about us',
-                    icon: 'mdi-package',
-                    link: '/about',
-                }, {
-                    name: 'our offer',
-                    icon: 'mdi-phone',
-                    link: '/our-offer',
-                }, {
-                    name: 'our products',
-                    icon: 'mdi-information',
-                    link: '/our-products',
-                }, {
-                    name: 'quality',
-                    icon: 'mdi-information',
-                    link: '/quality',
-                }, {
-                    name: 'news',
-                    icon: 'mdi-information',
-                    link: '/news',
-                }, {
-                    name: 'contacts',
-                    icon: 'mdi-information',
-                    link: '/contacts',
-                },{
-                    name: 'laporan',
-                    icon: 'mdi-information',
-                    link: '/laporan',
-                }],
-            perusahaan: [],
-            contact: [],
-            social_media: [],
-            footer: [],
-        }
-    },
     methods: {
-        menuklik(link) {
-            this.drawer = false
-            this.$router.push({
-                path: link
-            })
-        }
-    },
-    computed: {
-        height() {
-            switch (this.$vuetify.breakpoint.name) {
-                case 'xs': return 220
-                case 'sm': return 400
-                case 'md': return 500
-                case 'lg': return 600
-                case 'xl': return 800
+        isNumber(evt) {
+            evt = (evt) ? evt : window.event;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                evt.preventDefault();
+            } else {
+                return true;
             }
         },
-        nosm() {
-            return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.md || this.$vuetify.breakpoint.lg || this.$vuetify.breakpoint.xl;
+        formatDate(date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
         },
-        sm(){
-            return this.$vuetify.breakpoint.xs;
+        formatRupiah(e) {
+            if(isNaN(e)){
+                return 0;
+            }else{
+                return `Rp. ${e.toString().split('').reverse().join('').match(/\d{1,3}/g).join('.').split('').reverse().join('')}`;
+            }
         },
-        users() {
-            return this.$store.state.user;
-        }
-    }
+    },
 }

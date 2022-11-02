@@ -10,7 +10,10 @@ class Transaksi extends Model
     use HasFactory;
     protected $fillable = [
         'inventory_id',
+        'tanggal',
+        'nomor_transaksi',
         'jumlah',
-        'tipe'
+        'tipe',
+        'total_stok'
     ];
 }

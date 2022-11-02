@@ -56,48 +56,47 @@ class InventoryController extends Controller
         ], 200);
     }
 
-
-    public function addPenjualan(Request $request)
+    public function getTransaksi()
     {
-        $transaksi = Transaksi::create([
-            'inventory_id' => $request->inventory_id,
-            'jumlah' => $request->jumlah,
-            'tipe' => 'penjualan'
-        ]);
-        if($transaksi){
-            $inventory = Inventory::find($request->inventory_id);
-            $inventory->update([
-                'stok' => $inventory->stok - $request->jumlah
-            ]);
-        }
+        $transaksi = Transaksi::with('inventory')->get();
         return response()->json([
-            'Nama Barang' => $inventory->name,
-            'Jumlah' => $request->jumlah,
-            'Harga Satuan' => $inventory->harga,
-            'Total Harga' => $request->jumlah * $inventory->harga,
+            'success' => true,
+            'message' => 'Daftar Data Transaksi',
+            'data' => $transaksi
         ], 200);
     }
 
-    public function addPembelian(Request $request)
+    public function addTransaksi(Request $request)
     {
         try {
-            $transaksi = Transaksi::create([
-                'inventory_id' => $request->inventory_id,
-                'jumlah' => $request->jumlah,
-                'tipe' => 'pembelian'
-            ]);
-            if($transaksi){
-                $inventory = Inventory::find($request->inventory_id);
+            $inventory = Inventory::find($request->inventory_id);
+            if($request->tipe == 'penambahan'){
+                $transaksi = Transaksi::create([
+                    'inventory_id' => $request->inventory_id,
+                    'tanggal' => $request->tanggal,
+                    'nomor_transaksi' => $request->nomor_transaksi,
+                    'jumlah' => $request->jumlah,
+                    'tipe' => $request->tipe,
+                    'total_stok' => $inventory->stok + $request->jumlah
+                ]);
                 $inventory->update([
                     'stok' => $inventory->stok + $request->jumlah
                 ]);
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Data Transaksi', 'data' => $transaksi], 200);
+            }else{
+                $transaksi = Transaksi::create([
+                    'inventory_id' => $request->inventory_id,
+                    'tanggal' => $request->tanggal,
+                    'nomor_transaksi' => $request->nomor_transaksi,
+                    'jumlah' => $request->jumlah,
+                    'tipe' => $request->tipe,
+                    'total_stok' => $inventory->stok - $request->jumlah
+                ]);
+                $inventory->update([
+                    'stok' => $inventory->stok - $request->jumlah
+                ]);
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Data Transaksi', 'data' => $transaksi], 200);
             }
-            return response()->json([
-                'Nama Barang' => $inventory->name,
-                'Jumlah Pembelian' => $request->jumlah,
-                'Harga Satuan' => $inventory->harga,
-                'Total Harga' => $request->jumlah * $inventory->harga
-            ], 200);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);
         }

@@ -15,9 +15,12 @@ class CreateTransaksisTable extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
+            $table->string('nomor_transaksi');
+            $table->date('tanggal');
             $table->foreignId('inventory_id')->constrained('inventories')->onDelete('cascade');
             $table->integer('jumlah');
             $table->string('tipe');
+            $table->string('total_stok');
             $table->timestamps();
         });
     }

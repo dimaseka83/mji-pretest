@@ -28,6 +28,5 @@ Route::get('/inventory', [InventoryController::class, 'inventory']);
 Route::post('/add-inventory', [InventoryController::class, 'addInventory']);
 Route::delete('/delete-inventory/{id}', [InventoryController::class, 'deleteInventory']);
 
-Route::post('/add-penjualan', [InventoryController::class, 'addPenjualan']);
-Route::post('/add-pembelian', [InventoryController::class, 'addPembelian']);
-
+Route::get('/transaksi', [InventoryController::class, 'getTransaksi']);
+Route::post('/addTransaksi', [InventoryController::class, 'addTransaksi']);
